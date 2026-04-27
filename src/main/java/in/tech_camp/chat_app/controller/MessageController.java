@@ -9,4 +9,6 @@ public class MessageController {
   public String showMessages(){
       return "messages/index";
   }
+
+  
 }
