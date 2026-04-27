@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MessageController {
   private final UserRepository userRepository;
+  
   @GetMapping("/")
   public String showMessages(@AuthenticationPrincipal CustomUserDetail currentUser,Model model){
     UserEntity user = userRepository.findById(currentUser.getId());  
