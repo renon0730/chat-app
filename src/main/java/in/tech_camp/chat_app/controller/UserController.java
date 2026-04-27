@@ -38,20 +38,18 @@ public class UserController {
   }
 
   @PostMapping("/user")
-  public String createUser(@ModelAttribute("userForm") @Validated(ValidationOrder.class) UserForm userForm, BindingResult result, Model model) {
+  public String createUser(
+    @ModelAttribute("userForm") @Validated(ValidationOrder.class) UserForm userForm,
+    BindingResult result,
+    Model model
+) {
     userForm.validatePasswordConfirmation(result);
-    if (userRepository.existsByEmail(userForm.getEmail())) {
-      result.rejectValue("email", "null", "Email already exists");
-    }
 
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream()
               .map(DefaultMessageSourceResolvable::getDefaultMessage)
               .collect(Collectors.toList());
-
-      model.addAttribute("errorMessages", errorMessages);
-      model.addAttribute("userForm", userForm);
-      return "users/signUp";
+              return "users/signUp";
     }
     UserEntity userEntity = new UserEntity();
     userEntity.setName(userForm.getName());
@@ -104,11 +102,25 @@ public class UserController {
     }
     if (result.hasErrors()) {
       List<String> errorMessages = result.getAllErrors().stream()
-                                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                                    .collect(Collectors.toList());
+        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+        .collect(Collectors.toList());
       model.addAttribute("errorMessages", errorMessages);
       model.addAttribute("user", userEditForm);
       return "users/edit";
     }
- }
 
+      UserEntity user = userRepository.findById(userId);
+  user.setName(userEditForm.getName());
+  user.setEmail(userEditForm.getEmail());
+
+  try {
+    userRepository.update(user);
+  } catch (Exception e) {
+    System.out.println("エラー：" + e);
+    model.addAttribute("user", userEditForm);
+    return "users/edit";
+  }
+
+  return "redirect:/";
+ }
+}
