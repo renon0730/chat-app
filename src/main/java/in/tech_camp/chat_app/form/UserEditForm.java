@@ -4,9 +4,13 @@ import in.tech_camp.chat_app.validation.ValidationPriority1;
 import in.tech_camp.chat_app.validation.ValidationPriority2;
 import lombok.Data;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+
 @Data
 public class UserEditForm {
   private Integer id;
+  
   @NotBlank(message = "Name can't be blank",groups = ValidationPriority1.class)
   private String name;
 
